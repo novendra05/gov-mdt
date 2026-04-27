@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government MDT</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { background: none !important; background-color: transparent !important; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-transparent overflow-hidden select-none relative">
+    <div id="app" class="hidden h-screen w-screen flex items-center justify-center p-4 text-white">
+        <!-- Main Container -->
+        <div class="bg-[#0f172a] w-[1350px] h-[850px] rounded-[2rem] shadow-[0_0_50px_rgba(30,58,138,0.3)] overflow-hidden flex border border-gray-700/50 relative text-white">
+            
+            <!-- Sidebar -->
+            <div class="w-64 bg-gray-900 flex flex-col justify-between border-r border-gray-700/50">
+                <div class="h-full overflow-y-auto no-scrollbar">
+                    <!-- Logo Section -->
+                    <div class="p-6 flex items-center space-x-3 border-b border-gray-700/50 mb-4 bg-gray-950/30">
+                        <div class="bg-blue-600 p-2 rounded-xl">
+                            <i class="fas fa-landmark text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-white font-bold text-lg tracking-wider">GOVERNMENT</h1>
+                            <p class="text-blue-400 text-[10px] font-semibold tracking-widest leading-none">MDT SYSTEM <span class="bg-blue-500/20 px-1 rounded text-[8px]">v2.0</span></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <nav class="nav-links space-y-1 px-3 pb-6 text-sm mt-4">
+                        <button class="nav-btn active w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="dashboard">
+                            <i class="fas fa-th-large w-5 text-center"></i><span>Dashboard</span>
+                        </button>
+                        <button class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="citizens">
+                            <i class="fas fa-users w-5 text-center"></i><span>Citizens</span>
+                        </button>
+                        <button class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="market_settings">
+                            <i class="fas fa-store w-5 text-center"></i><span>Market Settings</span>
+                        </button>
+                        <button class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="warehouse">
+                            <i class="fas fa-box w-5 text-center"></i><span>Warehouse</span>
+                        </button>
+                        <button class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="announcements">
+                            <i class="fas fa-bullhorn w-5 text-center"></i><span>Announcements</span>
+                        </button>
+                        <button class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="documents">
+                            <i class="fas fa-gavel w-5 text-center"></i><span>Legal Documents</span>
+                        </button>
+                        <button class="nav-btn w-full flex items-center space-x-3 px-4 py-2.5 font-medium rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition" data-page="department">
+                            <i class="fas fa-users-cog w-5 text-center"></i><span>Department</span>
+                        </button>
+                    </nav>
+                </div>
+                
+                <!-- User Footer -->
+                <div class="p-4 bg-gray-950 border-t border-gray-700/50 flex flex-col gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 bg-blue-600/20 rounded-lg flex items-center justify-center text-blue-400">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-semibold text-sm truncate w-32" id="user-name">Loading...</div>
+                            <div class="text-blue-400 text-[10px] font-bold" id="user-job">GOVERNMENT</div>
+                        </div>
+                    </div>
+                    <button onclick="closeMDT()" class="w-full py-2 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white rounded-lg transition text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                        <i class="fas fa-power-off"></i> Logout MDT
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 bg-[#0f172a] text-white flex flex-col">
+                <div id="content-container" class="flex-1 p-8 overflow-y-auto no-scrollbar">
+                    
+                    <div id="page-dashboard" class="page active animate-fade-in">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Department Dashboard</h2>
+                            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest bg-gray-900 px-3 py-1 rounded-lg border border-gray-800" id="current-date">--/--/----</div>
+                        </div>
+
+                        <!-- Latest Announcement -->
+                        <div id="latest-announcement-container" class="mb-8 hidden animate-fade-in">
+                            <div class="bg-blue-600/10 border border-blue-500/30 rounded-[2rem] p-8 flex items-center gap-8 relative overflow-hidden group">
+                                <div class="absolute -right-10 -top-10 text-[150px] text-blue-500/5 rotate-12 pointer-events-none">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <div class="h-20 w-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white text-4xl shadow-[0_0_30px_rgba(37,99,235,0.4)]">
+                                    <i class="fas fa-scroll"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Official Government Notice</h4>
+                                    <h3 class="text-2xl font-black text-white mb-2" id="dash-announce-title">Loading...</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed max-w-2xl" id="dash-announce-msg">--</p>
+                                    <div class="flex items-center gap-4 mt-4">
+                                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest" id="dash-announce-author">By: --</span>
+                                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest" id="dash-announce-date">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-4 gap-6 mb-8">
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-6 rounded-2xl flex items-center gap-4 shadow-lg group hover:border-blue-500/50 transition duration-300">
+                                <div class="h-12 w-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 text-2xl group-hover:scale-110 transition">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Registered Citizens</p>
+                                    <h3 class="text-2xl font-black" id="stat-total-citizens">0</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-6 rounded-2xl flex items-center gap-4 shadow-lg group hover:border-green-500/50 transition duration-300">
+                                <div class="h-12 w-12 bg-green-500/10 rounded-xl flex items-center justify-center text-green-500 text-2xl group-hover:scale-110 transition">
+                                    <i class="fas fa-hand-holding-dollar"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Market Revenue</p>
+                                    <h3 class="text-2xl font-black" id="stat-total-revenue">$0</h3>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-6 rounded-2xl flex items-center gap-4 shadow-lg group hover:border-orange-500/50 transition duration-300">
+                                <div class="h-12 w-12 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-500 text-2xl group-hover:scale-110 transition">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Top Selling Item</p>
+                                    <h3 class="text-sm font-black truncate w-32" id="stat-top-item">None</h3>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-900/50 border border-gray-700/50 p-6 rounded-2xl flex items-center gap-4 shadow-lg group hover:border-purple-500/50 transition duration-300">
+                                <div class="h-12 w-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-500 text-2xl group-hover:scale-110 transition">
+                                    <i class="fas fa-warehouse"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Warehouse Status</p>
+                                    <h3 class="text-2xl font-black" id="stat-warehouse-health">0%</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Sales Activity -->
+                        <div class="bg-gray-900/50 border border-gray-700/50 rounded-2xl overflow-hidden shadow-xl">
+                            <div class="px-6 py-4 border-b border-gray-700/50 flex justify-between items-center bg-gray-900">
+                                <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Recent Sales Activity</h3>
+                                <div class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                            </div>
+                            <div class="p-0">
+                                <table class="w-full text-left text-sm" id="recent-sales-table">
+                                    <thead class="bg-gray-950/50 text-gray-500">
+                                        <tr>
+                                            <th class="px-6 py-3 font-bold uppercase text-[10px]">Citizen</th>
+                                            <th class="px-6 py-3 font-bold uppercase text-[10px]">Item</th>
+                                            <th class="px-6 py-3 font-bold uppercase text-[10px]">Amount</th>
+                                            <th class="px-6 py-4 font-bold uppercase text-[10px]">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-800">
+                                        <!-- Injected via updateDashboard -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Citizens Page -->
+                    <div id="page-citizens" class="page animate-fade-in hidden">
+                        <h2 class="text-2xl font-bold mb-6">Citizen Search</h2>
+                        <div class="flex gap-4 mb-8">
+                            <input type="text" id="citizen-search-input" class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition" placeholder="Search by Name or Citizen ID...">
+                            <button onclick="searchCitizens()" class="bg-blue-600 hover:bg-blue-500 px-8 py-3 rounded-xl font-bold transition flex items-center gap-2">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                        
+                        <div id="citizen-results" class="grid grid-cols-2 gap-4">
+                            <!-- Results -->
+                        </div>
+
+                        <div id="citizen-profile" class="hidden animate-fade-in">
+                            <button onclick="backToSearch()" class="mb-4 text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-arrow-left"></i> Back to search
+                            </button>
+                            <div class="bg-gray-900/50 border border-gray-700 rounded-2xl p-8 shadow-2xl">
+                                <div class="flex items-center gap-6 mb-8 pb-8 border-b border-gray-700">
+                                    <div class="h-24 w-24 bg-gray-800 rounded-3xl flex items-center justify-center text-gray-600 text-5xl">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h2 class="text-3xl font-black" id="profile-name">John Doe</h2>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-blue-400 font-bold tracking-widest text-sm uppercase" id="profile-cid">CID: 12345</p>
+                                            <button onclick="copyCID()" class="text-gray-500 hover:text-white transition p-1" title="Copy CID">
+                                                <i class="fas fa-copy text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Status</p>
+                                        <span class="bg-green-500/20 text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-[10px] font-black uppercase">Registered</span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-4 gap-8 mb-10">
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Phone</label>
+                                        <p class="text-white font-semibold" id="profile-phone">N/A</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Birthdate</label>
+                                        <p class="text-white font-semibold" id="profile-dob">N/A</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nationality</label>
+                                        <p class="text-white font-semibold" id="profile-nationality">N/A</p>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest text-blue-400">Occupation</label>
+                                        <p class="text-blue-400 font-bold" id="profile-job">N/A</p>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-8">
+                                    <div class="space-y-4">
+                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Official Licenses</label>
+                                        <div id="license-list" class="space-y-3">
+                                            <!-- Licenses will be injected here -->
+                                            <div class="flex items-center justify-between bg-gray-950/50 p-4 rounded-xl border border-gray-800 group hover:border-blue-500/30 transition">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="h-8 w-8 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400">
+                                                        <i class="fas fa-car"></i>
+                                                    </div>
+                                                    <span class="text-xs font-bold uppercase tracking-widest">Driver License</span>
+                                                </div>
+                                                <div id="license-driver">--</div>
+                                            </div>
+                                            <div class="flex items-center justify-between bg-gray-950/50 p-4 rounded-xl border border-gray-800 group hover:border-red-500/30 transition">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="h-8 w-8 bg-red-500/10 rounded-lg flex items-center justify-center text-red-400">
+                                                        <i class="fas fa-gun"></i>
+                                                    </div>
+                                                    <span class="text-xs font-bold uppercase tracking-widest">Weapon License</span>
+                                                </div>
+                                                <div id="license-weapon">--</div>
+                                            </div>
+                                            <div class="flex items-center justify-between bg-gray-950/50 p-4 rounded-xl border border-gray-800 group hover:border-orange-500/30 transition">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="h-8 w-8 bg-orange-500/10 rounded-lg flex items-center justify-center text-orange-400">
+                                                        <i class="fas fa-briefcase"></i>
+                                                    </div>
+                                                    <span class="text-xs font-bold uppercase tracking-widest">Business Permit</span>
+                                                </div>
+                                                <div id="license-business">--</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center">
+                                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Family Members</label>
+                                        </div>
+                                        <div id="family-list" class="space-y-2">
+                                            <!-- Injected via JS -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Pages (Coming soon indicators) -->
+                    <div id="page-sales" class="page hidden animate-fade-in">
+                        <h2 class="text-2xl font-bold mb-6">Government Sales Logs</h2>
+                        <div class="bg-gray-900/50 border border-gray-700/50 rounded-2xl overflow-hidden shadow-xl">
+                            <table class="w-full text-left text-sm" id="full-sales-table">
+                                <thead class="bg-gray-950/50 text-gray-500">
+                                    <tr>
+                                        <th class="px-6 py-4 font-bold uppercase text-[10px]">Time</th>
+                                        <th class="px-6 py-4 font-bold uppercase text-[10px]">Citizen</th>
+                                        <th class="px-6 py-4 font-bold uppercase text-[10px]">CID</th>
+                                        <th class="px-6 py-4 font-bold uppercase text-[10px]">Item</th>
+                                        <th class="px-6 py-4 font-bold uppercase text-[10px]">Qty</th>
+                                        <th class="px-6 py-4 font-bold uppercase text-[10px]">Payout</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <!-- Injected via renderSalesLogs -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="page-market_settings" class="page hidden animate-fade-in">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Market & Category Settings</h2>
+                            <div class="flex gap-2">
+                                <button onclick="openAddCategoryModal()" class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-xl font-bold text-sm transition flex items-center gap-2 border border-gray-700">
+                                    <i class="fas fa-folder-plus"></i> Add Category
+                                </button>
+                                <button onclick="openAddItemModal()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl font-bold text-sm transition flex items-center gap-2">
+                                    <i class="fas fa-plus"></i> Add New Item
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Categories List -->
+                        <div class="bg-gray-900/30 border border-gray-700/50 rounded-2xl overflow-hidden mb-8 shadow-sm">
+                            <div class="px-6 py-3 bg-gray-950/50 border-b border-gray-700/50 flex justify-between items-center">
+                                <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Available Categories</h3>
+                            </div>
+                            <div id="categories-list" class="p-4 grid grid-cols-4 gap-3">
+                                <!-- Injected -->
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-900/50 border border-gray-700/50 rounded-2xl overflow-hidden shadow-xl">
+                            <table class="w-full text-left text-sm" id="market-items-table">
+                                <thead class="bg-gray-950/50 text-gray-500">
+                                    <tr>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px]">Category</th>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px]">Item Label</th>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px]">Spawn Name</th>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px]">Buy Price (Gov)</th>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px]">Sell Price (Citizens)</th>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px]">Quota (Stock)</th>
+                                        <th class="px-6 py-3 font-bold uppercase text-[10px] text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <!-- Injected -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Announcements Page -->
+                    <div id="page-announcements" class="page animate-fade-in hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Official Announcements</h2>
+                            <button onclick="openAnnounceModal()" id="btn-add-announce" class="hidden bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-xl font-bold transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> New Announcement
+                            </button>
+                        </div>
+                        <div id="announcements-list" class="space-y-4">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+
+                    <!-- Legal Documents Page -->
+                    <div id="page-documents" class="page animate-fade-in hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Legal Documents & Laws</h2>
+                            <button onclick="openDocModal()" id="btn-add-doc" class="hidden bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-xl font-bold transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> New Document
+                            </button>
+                        </div>
+                        <div id="documents-list" class="grid grid-cols-2 gap-6">
+                            <!-- Injected -->
+                        </div>
+                    </div>
+
+                    <!-- Department Page -->
+                    <div id="page-department" class="page animate-fade-in hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">Department Management</h2>
+                            <button onclick="openHireModal()" class="bg-green-600 hover:bg-green-500 px-6 py-2 rounded-xl font-bold transition flex items-center gap-2">
+                                <i class="fas fa-user-plus"></i> Hire Employee
+                            </button>
+                        </div>
+                        <div class="bg-gray-900/50 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl">
+                            <table class="w-full text-left text-sm" id="department-table">
+                                <thead class="bg-gray-950 text-gray-500 font-bold uppercase text-[10px]">
+                                    <tr>
+                                        <th class="px-6 py-4">Employee</th>
+                                        <th class="px-6 py-4">Grade</th>
+                                        <th class="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <!-- Injected -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Custom Modal: Add Item -->
+    <div id="modal-container" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[999] text-white">
+        <div class="bg-gray-900 border border-gray-700 w-[450px] rounded-3xl p-8 shadow-2xl animate-fade-in text-white">
+            <h3 class="text-xl font-bold mb-2">Add Market Item</h3>
+            <p class="text-xs text-gray-500 mb-6 uppercase tracking-widest font-bold">Configure new item for government buy-back</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Target Category</label>
+                    <select id="input-item-category" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm">
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Item Spawn Name</label>
+                    <input type="text" id="input-item-name" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="e.g. apple">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Display Label</label>
+                    <input type="text" id="input-item-label" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="e.g. Apple">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Buy Price ($)</label>
+                        <input type="number" id="input-item-price" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Gov buy">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Sell Price ($)</label>
+                        <input type="number" id="input-item-sell-price" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Citizen buy">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Max Stock</label>
+                        <input type="number" id="input-item-stock" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Quota">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-xl font-bold transition text-xs uppercase tracking-widest">Cancel</button>
+                <button onclick="submitNewItem()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition shadow-lg shadow-blue-600/20 text-xs uppercase tracking-widest">Confirm Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal: Add Category -->
+    <div id="modal-category" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] text-white">
+        <div class="bg-gray-900 border border-gray-700 w-[400px] rounded-3xl p-8 shadow-2xl animate-fade-in text-white">
+            <h3 class="text-xl font-bold mb-2">New Category</h3>
+            <p class="text-xs text-gray-500 mb-6 uppercase tracking-widest font-bold">Create new product category & warehouse</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Category Code (e.g. fruit)</label>
+                    <input type="text" id="input-cat-name" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Lowercase, no spaces">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Display Label (e.g. Fruits)</label>
+                    <input type="text" id="input-cat-label" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Friendly name">
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="closeCategoryModal()" class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-xl font-bold transition text-xs uppercase tracking-widest">Cancel</button>
+                <button onclick="submitNewCategory()" class="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition shadow-lg shadow-green-600/20 text-xs uppercase tracking-widest">Create Category</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-8 right-8 z-[1001] space-y-3 pointer-events-none"></div>
+
+    <!-- Custom Modal: Post Announcement -->
+    <div id="modal-announce" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] text-white">
+        <div class="bg-gray-900 border border-gray-700 w-[500px] rounded-3xl p-8 shadow-2xl animate-fade-in text-white">
+            <h3 class="text-xl font-bold mb-2">Official Notice</h3>
+            <p class="text-xs text-gray-500 mb-6 uppercase tracking-widest font-bold">Broadcast to all department staff</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Title</label>
+                    <input type="text" id="input-announce-title" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Notice subject">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Message Content</label>
+                    <textarea id="input-announce-msg" rows="4" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Write your message here..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="closeAnnounceModal()" class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-xl font-bold transition text-xs uppercase tracking-widest">Cancel</button>
+                <button onclick="submitNewAnnouncement()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition shadow-lg shadow-blue-600/20 text-xs uppercase tracking-widest">Post Notice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal: Hire Employee -->
+    <div id="modal-hire" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] text-white">
+        <div class="bg-gray-900 border border-gray-700 w-[400px] rounded-3xl p-8 shadow-2xl animate-fade-in text-center text-white">
+            <div class="w-16 h-16 bg-green-500/20 text-green-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Hire New Staff</h3>
+            <p class="text-xs text-gray-500 mb-6 uppercase tracking-widest font-bold">Enter Citizen ID to recruit</p>
+            
+            <input type="text" id="input-hire-cid" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-green-500 transition text-center text-lg font-mono mb-6" placeholder="CID12345">
+
+            <div class="mb-6">
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 text-left">Nearby Citizens</p>
+                <div id="nearby-players-list" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar">
+                    <!-- Injected -->
+                    <p class="text-[10px] text-gray-600 italic">No one nearby...</p>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeHireModal()" class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-xl font-bold transition text-xs uppercase tracking-widest">Cancel</button>
+                <button onclick="submitHire()" class="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition shadow-lg shadow-green-600/20 text-xs uppercase tracking-widest">Hire Staff</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal: Legal Document (CREATION) -->
+    <div id="modal-document" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1000] text-white">
+        <div class="bg-gray-900 border border-gray-700 w-[600px] rounded-3xl p-8 shadow-2xl animate-fade-in text-white">
+            <h3 class="text-xl font-bold mb-2" id="modal-doc-title-text">Legal Document</h3>
+            <p class="text-xs text-gray-500 mb-6 uppercase tracking-widest font-bold">Store laws, regulations or official papers</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Document Title</label>
+                    <input type="text" id="input-doc-title" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="e.g. City Law #1 - Traffic">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1">Content</label>
+                    <textarea id="input-doc-content" rows="16" class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition text-sm" placeholder="Type document content..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-8">
+                <button onclick="closeDocModal()" class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-xl font-bold transition text-xs uppercase tracking-widest">Cancel</button>
+                <button onclick="submitNewDocument()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition shadow-lg shadow-blue-600/20 text-xs uppercase tracking-widest">Save Document</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal: Document Viewer (FOR TARGETS) -->
+    <div id="modal-view-doc" class="hidden fixed inset-0 bg-transparent flex items-center justify-center z-[2000] text-gray-900">
+        <div class="bg-[#f8f5f0] w-[700px] h-[90vh] rounded-sm shadow-[0_0_100px_rgba(0,0,0,0.5)] p-12 overflow-y-auto no-scrollbar relative animate-fade-in border-[12px] border-[#e5e1d8]">
+            <!-- Paper Texture & Header -->
+            <div class="flex justify-between items-start border-b-2 border-gray-900 pb-8 mb-8">
+                <div>
+                    <div class="bg-gray-900 text-white p-2 w-12 h-12 flex items-center justify-center mb-4">
+                        <i class="fas fa-landmark text-2xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-black uppercase tracking-tighter leading-none">The State of Government</h1>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Official Legal Documentation</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Document No.</p>
+                    <p class="font-mono font-bold text-sm" id="view-doc-id">#GOV-0000</p>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="space-y-6">
+                <h2 class="text-4xl font-black tracking-tight" id="view-doc-title">Document Title</h2>
+                <div class="w-20 h-1 bg-gray-900"></div>
+                
+                <div class="text-lg leading-relaxed font-serif text-gray-800 whitespace-pre-wrap py-8" id="view-doc-content">
+                    Document content goes here...
+                </div>
+            </div>
+
+            <!-- Footer / Signature -->
+            <div class="mt-12 pt-12 border-t border-gray-300 flex justify-between items-end">
+                <div>
+                    <p class="text-[10px] font-bold uppercase text-gray-400 mb-1">Issue Date</p>
+                    <p class="font-bold" id="view-doc-date">26/04/2026</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-bold uppercase text-gray-400 mb-1">Certified By</p>
+                    <p class="font-black italic text-xl font-serif" id="view-doc-author">Governor Signature</p>
+                    <div class="h-px w-48 bg-gray-900 mt-1 ml-auto"></div>
+                </div>
+            </div>
+
+            <!-- Close Button (Floating) -->
+            <button onclick="closeViewDoc()" class="fixed top-8 right-8 bg-black/50 hover:bg-black/70 text-white p-4 rounded-full transition group shadow-2xl">
+                <i class="fas fa-times text-2xl group-hover:rotate-90 transition duration-300"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Modal: Citizen Registration (LARGE & CLEAR) -->
+    <div id="modal-citizen-registration" class="hidden fixed inset-0 bg-transparent flex items-center justify-center z-[3000] text-white">
+        <div class="bg-[#f8f5f0] w-[850px] rounded-sm shadow-[0_0_150px_rgba(0,0,0,0.9)] p-16 relative animate-fade-in border-[15px] border-[#e5e1d8] text-gray-900">
+            <div class="text-center border-b-4 border-gray-900 pb-10 mb-10">
+                <div class="bg-gray-900 text-white p-3 w-16 h-16 flex items-center justify-center mb-6 mx-auto rounded-xl">
+                    <i class="fas fa-file-contract text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-black uppercase tracking-tighter leading-none mb-2">Government of San Andreas</h1>
+                <p class="text-xs font-bold uppercase tracking-[0.3em] text-gray-500">Official Citizen Document Application</p>
+            </div>
+
+            <input type="hidden" id="reg-doc-type">
+            
+            <div class="space-y-8">
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest block mb-3">Applicant Full Name</label>
+                        <input type="text" id="reg-name" style="color: #000000 !important;" class="w-full bg-white border-b-2 border-gray-300 focus:border-gray-900 py-3 outline-none transition text-xl font-serif italic font-bold" placeholder="Enter your full name...">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest block mb-3">Document Category</label>
+                        <div id="reg-type-label" style="color: #000000 !important;" class="text-xl font-bold uppercase tracking-tight py-3 border-b-2 border-gray-100">Document Type</div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest block mb-3">Application Details & Declarations</label>
+                    <textarea id="reg-details" rows="14" style="color: #000000 !important;" class="w-full bg-white border-2 border-gray-100 focus:border-gray-900 p-6 outline-none transition text-lg font-serif leading-relaxed resize-none shadow-inner font-bold" placeholder="Provide all necessary information here..."></textarea>
+                </div>
+            </div>
+
+            <div class="mt-12 flex gap-4">
+                <button onclick="closeCitizenRegistration()" class="flex-1 py-4 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-lg font-black transition text-xs uppercase tracking-widest">Cancel Application</button>
+                <button onclick="submitCitizenRegistration()" class="flex-1 py-4 bg-gray-900 hover:bg-black text-white rounded-lg font-black transition shadow-2xl text-xs uppercase tracking-widest">Submit Official Record</button>
+            </div>
+
+            <p class="mt-8 text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest opacity-50 italic">Penalty for falsifying government documents may include fines or imprisonment.</p>
+        </div>
+    </div>
+
+    <!-- Custom Modal: Confirmation -->
+    <div id="modal-confirm" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[1100] text-white">
+        <div class="bg-gray-900 border border-gray-700 w-[350px] rounded-3xl p-8 shadow-2xl animate-fade-in text-center text-white">
+            <div class="w-16 h-16 bg-red-500/20 text-red-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Are you sure?</h3>
+            <p id="confirm-message" class="text-sm text-gray-500 mb-8">This action cannot be undone.</p>
+            
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white rounded-xl font-bold transition text-xs uppercase tracking-widest">Cancel</button>
+                <button id="confirm-button" class="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold transition shadow-lg shadow-red-600/20 text-xs uppercase tracking-widest">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
