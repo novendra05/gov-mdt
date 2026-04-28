@@ -85,7 +85,7 @@ RegisterNUICallback('getMarketItems', function(data, cb)
 end)
 
 RegisterNUICallback('updateMarketItem', function(data, cb)
-    lib.callback.await('gov-mdt:server:updateMarketItem', false, data.item, data.label, data.price, data.category, data.max_stock, data.sell_price)
+    lib.callback.await('gov-mdt:server:updateMarketItem', false, data.item, data.label, data.price, data.category, data.max_stock, data.sell_price, data.min_buy_price, data.min_stock_percent)
     cb('ok')
 end)
 
@@ -353,9 +353,21 @@ function openGovMarket(filter, mode)
                 local remaining = max - current
                 local isFull = remaining <= 0
 
+                local currentPrice = items[i].price
+                if items[i].min_buy_price and items[i].min_buy_price > 0 and items[i].price > items[i].min_buy_price then
+                    local stockPercent = current / max
+                    local targetPercent = (items[i].min_stock_percent or 80) / 100.0
+                    
+                    if stockPercent >= targetPercent then
+                        currentPrice = items[i].min_buy_price
+                    else
+                        currentPrice = items[i].price
+                    end
+                end
+
                 options[#options+1] = {
                     title = items[i].label .. (isFull and ' (OUT OF STOCK)' or ''),
-                    description = string.format('[%s] Price: $%d | Quota: %d/%d', items[i].category, items[i].price, current, max),
+                    description = string.format('[%s] Price: $%d | Quota: %d/%d', items[i].category, currentPrice, current, max),
                     icon = 'hand-holding-dollar',
                     disabled = isFull,
                     progress = (current / max) * 100,

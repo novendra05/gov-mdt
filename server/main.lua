@@ -23,7 +23,9 @@ MySQL.ready(function()
             `item` VARCHAR(50) NOT NULL UNIQUE,
             `label` VARCHAR(100) NOT NULL,
             `price` INT NOT NULL DEFAULT 0,
-            `category` VARCHAR(50) NOT NULL DEFAULT 'General'
+            `category` VARCHAR(50) NOT NULL DEFAULT 'General',
+            `min_buy_price` INT NOT NULL DEFAULT 0,
+            `min_stock_percent` INT NOT NULL DEFAULT 80
         );
     ]])
 
@@ -40,6 +42,8 @@ MySQL.ready(function()
     MySQL.query("ALTER TABLE `gov_market_items` ADD COLUMN IF NOT EXISTS `max_stock` INT NOT NULL DEFAULT 100")
     MySQL.query("ALTER TABLE `gov_market_items` ADD COLUMN IF NOT EXISTS `current_stock` INT NOT NULL DEFAULT 0")
     MySQL.query("ALTER TABLE `gov_market_items` ADD COLUMN IF NOT EXISTS `sell_price` INT NOT NULL DEFAULT 0")
+    MySQL.query("ALTER TABLE `gov_market_items` ADD COLUMN IF NOT EXISTS `min_buy_price` INT NOT NULL DEFAULT 0")
+    MySQL.query("ALTER TABLE `gov_market_items` ADD COLUMN IF NOT EXISTS `min_stock_percent` INT NOT NULL DEFAULT 80")
 
     -- Announcements Table
     MySQL.query([[
@@ -256,12 +260,13 @@ lib.callback.register('gov-mdt:server:getMarketItems', function(source)
 end)
 
 -- Update Market Item (Add/Edit)
-lib.callback.register('gov-mdt:server:updateMarketItem', function(source, item, label, price, category, max_stock, sell_price)
+lib.callback.register('gov-mdt:server:updateMarketItem', function(source, item, label, price, category, max_stock, sell_price, min_buy_price, min_stock_percent)
     local src = source
     if not isHighRank(src) then return false end
     
-    MySQL.query.await('INSERT INTO gov_market_items (item, label, price, category, max_stock, sell_price) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE label = ?, price = ?, category = ?, max_stock = ?, sell_price = ?', {
-        item, label, price, category, max_stock, sell_price, label, price, category, max_stock, sell_price
+    local stockPercentLimit = min_stock_percent or 80
+    MySQL.query.await('INSERT INTO gov_market_items (item, label, price, category, max_stock, sell_price, min_buy_price, min_stock_percent) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE label = ?, price = ?, category = ?, max_stock = ?, sell_price = ?, min_buy_price = ?, min_stock_percent = ?', {
+        item, label, price, category, max_stock, sell_price, min_buy_price, stockPercentLimit, label, price, category, max_stock, sell_price, min_buy_price, stockPercentLimit
     })
     return true
 end)
@@ -313,7 +318,20 @@ lib.callback.register('gov-mdt:server:sellItemToGov', function(source, itemData,
         return false, 'Not enough items.'
     end
 
-    local totalPrice = itemData.price * amount
+    -- Dynamic Price Calculation
+    local currentPrice = itemData.price
+    if itemData.min_buy_price and itemData.min_buy_price > 0 and itemData.price > itemData.min_buy_price then
+        local stockPercent = marketItem.current_stock / marketItem.max_stock
+        local targetPercent = (itemData.min_stock_percent or 80) / 100.0
+        
+        if stockPercent >= targetPercent then
+            currentPrice = itemData.min_buy_price
+        else
+            currentPrice = itemData.price
+        end
+    end
+
+    local totalPrice = currentPrice * amount
     local stashId = 'gov_stash_' .. (itemData.category or 'General')
 
     if exports.ox_inventory:RemoveItem(src, itemData.item, amount) then

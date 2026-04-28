@@ -430,8 +430,10 @@ function openAddItemModal(editData = null) {
         document.getElementById('input-item-name').readOnly = true;
         document.getElementById('input-item-label').value = editData.label;
         document.getElementById('input-item-price').value = editData.price;
+        document.getElementById('input-item-min-price').value = editData.min_buy_price || 0;
         document.getElementById('input-item-sell-price').value = editData.sell_price || 0;
         document.getElementById('input-item-stock').value = editData.max_stock;
+        document.getElementById('input-item-min-stock-percent').value = editData.min_stock_percent || 80;
         document.getElementById('input-item-category').value = editData.category;
     } else {
         title.innerText = "Add Market Item";
@@ -440,8 +442,10 @@ function openAddItemModal(editData = null) {
         document.getElementById('input-item-name').readOnly = false;
         document.getElementById('input-item-label').value = '';
         document.getElementById('input-item-price').value = '';
+        document.getElementById('input-item-min-price').value = '';
         document.getElementById('input-item-sell-price').value = '';
         document.getElementById('input-item-stock').value = '';
+        document.getElementById('input-item-min-stock-percent').value = '80';
         document.getElementById('input-item-category').value = '';
     }
 }
@@ -461,8 +465,10 @@ function submitNewItem() {
     const item = document.getElementById('input-item-name').value;
     const label = document.getElementById('input-item-label').value;
     const price = document.getElementById('input-item-price').value;
+    const minPrice = document.getElementById('input-item-min-price').value;
     const sellPrice = document.getElementById('input-item-sell-price').value;
     const stock = document.getElementById('input-item-stock').value;
+    const minStockPercent = document.getElementById('input-item-min-stock-percent').value;
     const category = document.getElementById('input-item-category').value;
 
     if (!item || !label || !price || !category || !stock || !sellPrice) return;
@@ -473,9 +479,11 @@ function submitNewItem() {
         body: JSON.stringify({ 
             item, label, 
             price: parseInt(price), 
+            min_buy_price: parseInt(minPrice) || 0,
             sell_price: parseInt(sellPrice),
             category, 
-            max_stock: parseInt(stock) 
+            max_stock: parseInt(stock),
+            min_stock_percent: parseInt(minStockPercent) || 80
         })
     }).then(() => {
         closeModal();
@@ -574,7 +582,7 @@ function renderMarketItems(data) {
                 </td>
                 <td class="px-6 py-4 font-semibold text-gray-200">${item.label}</td>
                 <td class="px-6 py-4 text-gray-500 font-mono text-[11px]">${item.item}</td>
-                <td class="px-6 py-4 text-green-400 font-bold">$${item.price}</td>
+                <td class="px-6 py-4 text-green-400 font-bold">$${item.price} <span class="text-gray-500 text-[10px]">/ Min: $${item.min_buy_price || 0}</span></td>
                 <td class="px-6 py-4 text-orange-400 font-bold">$${item.sell_price || 0}</td>
                 <td class="px-6 py-4">
                     <div class="w-32">
